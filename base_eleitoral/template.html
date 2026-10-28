@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Base eleitoral</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Tokens copiados do GabineteOS: escuro por padrão, claro pela preferência do sistema ou data-theme. */
+:root{
+  --bg:#0E1113; --surface:#14181B; --raised:#1B2024; --hover:#222830; --line:#262D32; --line-2:#323A40;
+  --fg:#E7ECE9; --muted:#8B9690; --faint:#5F6A65;
+  --accent:#3DDC97; --accent-ink:#04170F; --accent-soft:color-mix(in srgb,#3DDC97 14%,transparent);
+  --ok:#3DDC97; --warn:#F3B746; --crit:#F25C5F; --info:#5AAEF2;
+  --scrim:rgba(4,8,7,.62); --shadow:0 18px 50px rgba(0,0,0,.45);
+  --seq-0:#1D3A2E; --seq-1:#1F6B48; --seq-2:#2AA76A; --seq-3:#3DDC97; --seq-4:#B5F5D6;
+  --r1:#3DDC97; --r2:#5AAEF2; --r3:#F3B746; --r4:#F25C5F;
+  --f-ui:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"Geist Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --f-num:"Barlow Condensed","Arial Narrow",ui-sans-serif,system-ui,sans-serif;
+  --r-lg:14px; --r:10px;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
+  --bg:#F2F5F3; --surface:#FFFFFF; --raised:#F7F9F8; --hover:#EDF1EF; --line:#DFE5E2; --line-2:#CBD4CF;
+  --fg:#111815; --muted:#5A6661; --faint:#8A958F;
+  --accent:#0F9E5E; --accent-ink:#FFFFFF; --accent-soft:color-mix(in srgb,#0F9E5E 11%,transparent);
+  --ok:#0F9E5E; --warn:#B87700; --crit:#D2383C; --info:#2575CC;
+  --scrim:rgba(18,26,22,.38); --shadow:0 18px 50px rgba(20,40,30,.16);
+  --seq-0:#D8F0E3; --seq-1:#9FDDBC; --seq-2:#4FBF86; --seq-3:#0F9E5E; --seq-4:#075E37;
+  --r1:#0F9E5E; --r2:#2575CC; --r3:#B87700; --r4:#D2383C;
+  color-scheme:light;
+}}
+:root[data-theme="light"]{
+  --bg:#F2F5F3; --surface:#FFFFFF; --raised:#F7F9F8; --hover:#EDF1EF; --line:#DFE5E2; --line-2:#CBD4CF;
+  --fg:#111815; --muted:#5A6661; --faint:#8A958F;
+  --accent:#0F9E5E; --accent-ink:#FFFFFF; --accent-soft:color-mix(in srgb,#0F9E5E 11%,transparent);
+  --ok:#0F9E5E; --warn:#B87700; --crit:#D2383C; --info:#2575CC;
+  --scrim:rgba(18,26,22,.38); --shadow:0 18px 50px rgba(20,40,30,.16);
+  --seq-0:#D8F0E3; --seq-1:#9FDDBC; --seq-2:#4FBF86; --seq-3:#0F9E5E; --seq-4:#075E37;
+  --r1:#0F9E5E; --r2:#2575CC; --r3:#B87700; --r4:#D2383C;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 var(--f-ui);-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+h1,h2,h3{margin:0;text-wrap:balance} p{margin:0}
+.wrap{max-width:1280px;margin:0 auto;padding:24px max(24px,env(safe-area-inset-right)) 48px max(24px,env(safe-area-inset-left))}
+.eyebrow{font:500 11px/1 var(--f-ui);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.vh{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.vh h1{font:700 34px/1.02 var(--f-num);margin-top:6px}
+.vh .sub{color:var(--muted);margin-top:6px;max-width:66ch}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;padding:2px;background:var(--surface);max-width:100%;overflow-x:auto}
+.seg button{height:30px;padding:0 12px;border-radius:7px;color:var(--muted);font-size:13px;font-weight:500;white-space:nowrap}
+.seg button.on{background:var(--hover);color:var(--fg)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.kpi .num{font:600 46px/.9 var(--f-num);font-variant-numeric:tabular-nums;color:var(--accent)}
+.kpi .lab{color:var(--muted);font-size:13px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);min-width:0}
+.panel>header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px 10px;flex-wrap:wrap}
+.panel>header h3{font:600 14px/1.2 var(--f-ui)}
+.grid2{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;align-items:start;margin-bottom:16px}
+.grid2b{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start;margin-bottom:16px}
+.ctrls{display:flex;gap:8px;flex-wrap:wrap;padding:0 16px 10px}
+#map{display:block;width:100%;height:auto;touch-action:none;user-select:none}
+#map .pt{cursor:pointer}
+#map .pt circle{stroke:var(--surface);stroke-width:1.2;transition:stroke-width .12s}
+#map .pt:hover circle,#map .pt.sel circle{stroke:var(--fg);stroke-width:2.4}
+#map text{font:500 10px var(--f-ui);fill:var(--fg);paint-order:stroke;stroke:var(--surface);stroke-width:3px;pointer-events:none}
+.legend{display:flex;gap:14px;flex-wrap:wrap;align-items:center;color:var(--muted);font-size:12px;padding:6px 16px 14px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:11px;height:11px;border-radius:50%;display:inline-block}
+.side{padding:4px 16px 16px;display:flex;flex-direction:column;gap:14px}
+.side h2{font:700 26px/1.05 var(--f-num)}
+.kv{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;font-size:13.5px;margin:0}
+.kv dt{color:var(--muted)} .kv dd{margin:0;font-family:var(--f-mono);text-align:right}
+.top5{display:flex;flex-direction:column;gap:6px}
+.top5 .it{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:8px;align-items:center;font-size:13px;padding:6px 8px;border-radius:8px}
+.top5 .it.me{background:var(--accent-soft)}
+.top5 .it b{font:600 15px var(--f-num);color:var(--muted)}
+.top5 .it .n{font-family:var(--f-mono)}
+.pill{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:999px;font:500 11.5px/1 var(--f-ui);background:var(--hover);color:var(--muted);white-space:nowrap}
+.pill.ok{background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok)}
+.pill.crit{background:color-mix(in srgb,var(--crit) 16%,transparent);color:var(--crit)}
+.pill.warn{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn)}
+.bars{display:flex;flex-direction:column;gap:9px;padding:4px 16px 16px}
+.bar{display:grid;grid-template-columns:150px minmax(0,1fr) 64px;align-items:center;gap:10px;font-size:13px}
+.bar .lb{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .tr{height:10px;border-radius:99px;background:var(--hover);overflow:hidden}
+.bar .tr i{display:block;height:100%;border-radius:99px;background:var(--faint)}
+.bar.me .tr i{background:var(--accent)} .bar.me .lb{font-weight:600}
+.bar .n{font:500 12.5px var(--f-mono);text-align:right;color:var(--muted)}
+.tbl-wrap{overflow:auto;border-top:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{font:500 11px/1 var(--f-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--faint);text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap;cursor:pointer;user-select:none}
+th[aria-sort="ascending"]::after{content:" ▲"} th[aria-sort="descending"]::after{content:" ▼"}
+td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+tbody tr{cursor:pointer} tbody tr:hover td{background:var(--hover)}
+td.num,th.num{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.filters{display:flex;gap:8px;flex-wrap:wrap;padding:0 16px 12px}
+.filters input{height:34px;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:0 10px;width:260px;max-width:100%}
+.iconbtn{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:9px;color:var(--muted);border:1px solid var(--line);background:var(--surface)}
+.iconbtn:hover{color:var(--fg);background:var(--hover)}
+footer{margin-top:22px;color:var(--muted);font-size:12.5px;display:flex;flex-direction:column;gap:8px;max-width:90ch}
+footer ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.conf{font-size:13px;padding:0 16px 16px;display:flex;flex-direction:column;gap:6px}
+.scrim{display:none}
+@media (max-width:1100px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2,.grid2b{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:760px){
+  .wrap{padding:18px max(16px,env(safe-area-inset-right)) calc(40px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+  .vh h1{font-size:30px}
+  .kpi .num{font-size:38px}
+  .bar{grid-template-columns:100px minmax(0,1fr) 56px}
+  .hide-m{display:none}
+  #painel.open{position:fixed;left:0;right:0;bottom:0;max-height:78vh;overflow:auto;z-index:20;border-radius:16px 16px 0 0;box-shadow:var(--shadow);padding-bottom:env(safe-area-inset-bottom)}
+  .scrim.open{display:block;position:fixed;inset:0;background:var(--scrim);z-index:19}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div class="scrim" id="scrim"></div>
+<script>
+"use strict";
+const D=/*__DADOS__*/null;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>n==null?'—':Number(n).toLocaleString('pt-BR');
+const pct=(n,d=2)=>n==null?'—':Number(n).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d})+'%';
+const ord=n=>n==null?'—':n+'º';
+const st={nivel:'bairro',camada:'votos',sel:null,sort:{k:'votos',dir:-1},q:''};
+try{const t=localStorage.getItem('be-tema');if(t)document.documentElement.dataset.theme=t}catch(e){}
+
+function cores(){const cs=getComputedStyle(document.documentElement);return k=>cs.getPropertyValue(k).trim()}
+function corPonto(u,max,c){
+  if(st.camada==='posicao'){const p=u.posicao;return c(p===1?'--r1':p&&p<=3?'--r2':p&&p<=10?'--r3':'--r4')}
+  const v=st.camada==='votos'?u.votos:u.pct_validos;const t=max?v/max:0;
+  return c('--seq-'+Math.min(4,Math.floor(t*5)));
+}
+function legenda(max){
+  const c=cores();
+  if(st.camada==='posicao')return [['1º','--r1'],['2º–3º','--r2'],['4º–10º','--r3'],['11º ou abaixo / sem voto','--r4']].map(([l,k])=>`<span><i style="background:${c(k)}"></i>${l}</span>`).join('');
+  const f=st.camada==='votos'?(v=>fmt(Math.round(v))):(v=>pct(v,1));
+  return [0,1,2,3,4].map(i=>`<span><i style="background:${c('--seq-'+i)}"></i>${f(max*i/5)}–${f(max*(i+1)/5)}</span>`).join('')+'<span class="muted">Tamanho do círculo = votos do Anderson</span>';
+}
+function lista(){return D.niveis[st.nivel]}
+function mapa(){
+  const W=800,H=560,pad=28,us=lista().filter(u=>u.lat!=null&&u.lon!=null&&u.id!=='Não mapeado');
+  const todos=D.niveis.local.filter(u=>u.lat!=null);
+  if(!todos.length)return `<p class="muted" style="padding:16px">Sem coordenadas no TSE para desenhar o mapa.</p>`;
+  const la=todos.map(u=>u.lat),lo=todos.map(u=>u.lon);
+  const [a0,a1,o0,o1]=[Math.min(...la),Math.max(...la),Math.min(...lo),Math.max(...lo)];
+  const kx=Math.cos((a0+a1)/2*Math.PI/180),sx=(o1-o0)*kx||1e-3,sy=(a1-a0)||1e-3,s=Math.min((W-2*pad)/sx,(H-2*pad)/sy);
+  const ox=(W-sx*s)/2,oy=(H-sy*s)/2;
+  const P=u=>[ox+(u.lon-o0)*kx*s,H-oy-(u.lat-a0)*s];
+  const c=cores(),maxV=Math.max(1,...us.map(u=>u.votos)),max=st.camada==='votos'?maxV:Math.max(.01,...us.map(u=>u.pct_validos));
+  const rmax=st.nivel==='local'?16:st.nivel==='bairro'?24:44;
+  const pts=us.slice().sort((a,b)=>b.votos-a.votos).map(u=>{const [x,y]=P(u),r=Math.max(3.5,rmax*Math.sqrt(u.votos/maxV));
+    return `<g class="pt${st.sel===u.id?' sel':''}" data-id="${esc(u.id)}" tabindex="0" role="button" aria-label="${esc(u.nome)}: ${fmt(u.votos)} votos"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="${corPonto(u,max,c)}"/><title>${esc(u.nome)} — ${fmt(u.votos)} votos · ${pct(u.pct_validos)} · ${ord(u.posicao)}</title></g>`}).join('');
+  const rot=st.nivel==='local'?'':us.slice().sort((a,b)=>b.votos-a.votos).slice(0,st.nivel==='zona'?20:10).map(u=>{const [x,y]=P(u);return `<text x="${x.toFixed(1)}" y="${(y-rmax*Math.sqrt(u.votos/maxV)-4).toFixed(1)}" text-anchor="middle">${esc(u.nome)}</text>`}).join('');
+  return `<svg id="map" viewBox="0 0 ${W} ${H}" role="img" aria-label="Mapa de Divinópolis por ${st.nivel}"><g id="mapg">${pts}${rot}</g></svg><div class="legend">${legenda(max)}</div>`;
+}
+function painel(){
+  const u=lista().find(x=>x.id===st.sel);
+  if(!u)return `<div class="side"><p class="eyebrow">Detalhe</p><p class="muted">Clique num ponto do mapa ou numa linha da tabela para ver os números do ${st.nivel==='local'?'local de votação':st.nivel}.</p>${conferencia()}</div>`;
+  const A=D.anderson,meIn=u.top5.some(t=>t.nr===A.nr);
+  const cls=u.classe?`<span class="pill ${u.classe==='Reduto'?'ok':u.classe==='Fragilidade'?'crit':''}">${esc(u.classe)}</span>`:'';
+  return `<div class="side"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div><p class="eyebrow">${st.nivel==='local'?'Local de votação':st.nivel==='zona'?'Zona eleitoral':'Bairro'}</p><h2>${esc(u.nome)}</h2>${u.endereco?`<p class="muted" style="font-size:12.5px">${esc(u.endereco)} · ${esc(u.bairro)}</p>`:''}</div><button class="iconbtn" data-act="fechar" aria-label="Fechar">✕</button></div>
+  <div>${cls}</div>
+  <dl class="kv"><dt>Votos do Anderson</dt><dd>${fmt(u.votos)}</dd><dt>% dos válidos (vereador)</dt><dd>${pct(u.pct_validos)}</dd><dt>% do total dele</dt><dd>${pct(u.pct_total)}</dd>
+  <dt>Posição do Anderson</dt><dd>${ord(u.posicao)} de ${fmt(u.n_candidatos)}</dd><dt>Mais votado</dt><dd>${esc(u.vencedor)} (${fmt(u.vencedor_votos)})</dd>
+  <dt>Diferença para o 1º</dt><dd>${u.dif_vencedor===0?'é o 1º':fmt(u.dif_vencedor)}</dd><dt>Votos válidos</dt><dd>${fmt(u.validos)}</dd>
+  ${u.aptos?`<dt>Eleitores aptos</dt><dd>${fmt(u.aptos)}</dd><dt>Comparecimento</dt><dd>${fmt(u.comparecimento)}</dd>`:''}<dt>Locais de votação</dt><dd>${fmt(u.n_locais)}</dd></dl>
+  <div><p class="eyebrow" style="margin-bottom:8px">Top 5 candidatos</p><div class="top5">${u.top5.map((t,i)=>`<div class="it${t.nr===A.nr?' me':''}"><b>${i+1}</b><span>${esc(t.nome)} <span class="muted">${esc(t.partido)}</span></span><span class="n">${fmt(t.votos)}</span></div>`).join('')}
+  ${meIn?'':`<div class="it me"><b>${ord(u.posicao)}</b><span>${esc(A.nome)}</span><span class="n">${fmt(u.votos)}</span></div>`}</div></div></div>`;
+}
+function conferencia(){
+  const c=D.conferencia;
+  return `<div><p class="eyebrow" style="margin-bottom:8px">Conferência com os totais oficiais</p><div class="conf" style="padding:0">
+  <p>${c.conferem} de ${c.n_candidatos} candidatos: soma das seções = total oficial do TSE.</p>
+  ${c.divergentes.length?`<p style="color:var(--crit)">${c.divergentes.length} divergente(s): ${c.divergentes.map(d=>`${esc(d.nome)} (${fmt(d.soma_secoes)} × ${fmt(d.total_oficial)})`).join('; ')}</p>`:''}
+  ${c.sem_oficial?`<p class="muted">${c.sem_oficial} sem total oficial para comparar.</p>`:''}
+  <p class="muted">Válidos (detalhe da apuração): ${fmt(D.validos_cidade)} · somados das seções: ${fmt(D.validos_somados)}</p></div></div>`;
+}
+function barras(itens,val,lab,isMe,fmtV){
+  const max=Math.max(1,...itens.map(val));
+  return `<div class="bars">${itens.map(i=>`<div class="bar${isMe(i)?' me':''}"><span class="lb" title="${esc(lab(i))}">${esc(lab(i))}</span><span class="tr"><i style="width:${(100*val(i)/max).toFixed(1)}%"></i></span><span class="n">${fmtV(i)}</span></div>`).join('')}</div>`;
+}
+const COLS=[['nome','Bairro',0],['zona','Zona',0,'hide-m'],['votos','Votos',1],['pct_validos','% válidos',1],['pct_total','% do total',1,'hide-m'],['posicao','Posição',1],['vencedor','Mais votado',0,'hide-m'],['dif_vencedor','Dif. p/ 1º',1,'hide-m'],['classe','Classe',0,'hide-m']];
+function tabela(){
+  const {k,dir}=st.sort,q=st.q.toLowerCase();
+  const rows=D.niveis.bairro.filter(b=>!q||b.nome.toLowerCase().includes(q)).sort((a,b)=>{const x=a[k]??Infinity,y=b[k]??Infinity;return (typeof x==='string'?x.localeCompare(y,'pt-BR'):x-y)*dir});
+  return `<table><thead><tr>${COLS.map(([c,l,n,h])=>`<th class="${n?'num':''} ${h||''}" data-sort="${c}" aria-sort="${k===c?(dir>0?'ascending':'descending'):'none'}">${l}</th>`).join('')}</tr></thead>
+  <tbody>${rows.map(b=>`<tr data-bairro="${esc(b.id)}"><td>${esc(b.nome)}</td><td class="hide-m">${esc(b.zona)}</td><td class="num">${fmt(b.votos)}</td><td class="num">${pct(b.pct_validos)}</td><td class="num hide-m">${pct(b.pct_total)}</td><td class="num">${ord(b.posicao)}</td><td class="hide-m">${esc(b.vencedor)}</td><td class="num hide-m">${b.dif_vencedor===0?'—':fmt(b.dif_vencedor)}</td><td class="hide-m">${b.classe==='Reduto'?'<span class="pill ok">Reduto</span>':b.classe==='Fragilidade'?'<span class="pill crit">Fragilidade</span>':esc(b.classe)}</td></tr>`).join('')}</tbody></table>`;
+}
+function render(){
+  if(!D){$('#app').innerHTML='<p>Dados não embutidos.</p>';return}
+  const A=D.anderson,bairros=D.niveis.bairro.filter(b=>b.id!=='Não mapeado');
+  const top15=bairros.slice().sort((a,b)=>b.votos-a.votos).slice(0,15);
+  const tema=document.documentElement.dataset.theme;
+  $('#app').innerHTML=`
+  <header class="vh"><div><p class="eyebrow">GabineteOS · Território · Acesso restrito</p><h1>Base eleitoral</h1>
+  <p class="sub">${esc(A.nome)} (${esc(A.nr)} · ${esc(A.partido)}) em Divinópolis/MG — eleição municipal de 2024, 1º turno, vereador. ${esc(A.situacao)}.</p></div>
+  <button class="iconbtn" data-act="tema" aria-label="Alternar tema" title="Alternar claro/escuro">${tema==='light'?'☾':'☀'}</button></header>
+  <section class="kpis">
+    <div class="kpi"><span class="num">${fmt(A.votos)}</span><span class="lab">votos no total</span></div>
+    <div class="kpi"><span class="num">${ord(A.colocacao)}</span><span class="lab">colocação na cidade, entre ${fmt(A.n_candidatos)} candidatos</span></div>
+    <div class="kpi"><span class="num">${pct(A.pct_validos)}</span><span class="lab">dos votos válidos para vereador</span></div>
+    <div class="kpi"><span class="num">${fmt(A.bairros_1o)}</span><span class="lab">bairros em que foi o mais votado, de ${fmt(A.n_bairros)}</span></div>
+  </section>
+  <section class="grid2">
+    <div class="panel"><header><h3>Mapa de Divinópolis</h3>
+      <div class="seg" role="tablist" aria-label="Nível">${[['zona','Zona'],['bairro','Bairro'],['local','Local de votação']].map(([v,l])=>`<button data-nivel="${v}" class="${st.nivel===v?'on':''}">${l}</button>`).join('')}</div></header>
+      <div class="ctrls"><div class="seg" aria-label="Camada">${[['votos','Votos do Anderson'],['pct','% dos válidos'],['posicao','Posição no ranking']].map(([v,l])=>`<button data-camada="${v}" class="${st.camada===v?'on':''}">${l}</button>`).join('')}</div></div>
+      <div id="mapbox">${mapa()}</div></div>
+    <div class="panel" id="painel">${painel()}</div>
+  </section>
+  <section class="grid2b">
+    <div class="panel"><header><h3>Top 15 bairros — votos do Anderson</h3><span class="muted" style="font-size:12.5px">50% dos votos em ${A.conc50??'—'} bairros · 80% em ${A.conc80??'—'}</span></header>
+      ${barras(top15,b=>b.votos,b=>b.nome,()=>true,b=>fmt(b.votos))}</div>
+    <div class="panel"><header><h3>Anderson × demais eleitos</h3><span class="muted" style="font-size:12.5px">votos · % válidos · bairros em 1º</span></header>
+      ${barras(D.comparativo,c=>c.votos,c=>c.nome,c=>c.eh_anderson,c=>`${fmt(c.votos)}`)}
+      <div class="tbl-wrap"><table><thead><tr><th>Candidato</th><th class="num">Votos</th><th class="num">% válidos</th><th class="num">Bairros em 1º</th></tr></thead><tbody>
+      ${D.comparativo.map(c=>`<tr style="cursor:default${c.eh_anderson?';font-weight:600':''}"><td>${esc(c.nome)} <span class="muted">${esc(c.partido)}</span></td><td class="num">${fmt(c.votos)}</td><td class="num">${pct(c.pct_validos)}</td><td class="num">${fmt(c.bairros_1o)}</td></tr>`).join('')}</tbody></table></div></div>
+  </section>
+  <section class="panel"><header><h3>Todos os bairros</h3><span class="muted" style="font-size:12.5px">Reduto = % dos válidos acima da média dele na cidade (${pct(A.pct_validos)}); fragilidade = abaixo</span></header>
+    <div class="filters"><input id="busca" type="search" placeholder="Buscar bairro" value="${esc(st.q)}" aria-label="Buscar bairro"></div>
+    <div class="tbl-wrap" id="tbl">${tabela()}</div></section>
+  <footer><p><b>Fontes:</b> TSE — Portal de Dados Abertos (dadosabertos.tse.jus.br): votação nominal por seção eleitoral 2024 (MG), detalhe da apuração por seção eleitoral 2024 (MG), eleitorado por local de votação 2024 e votação por candidato, município e zona 2024. Código TSE do município: ${esc(D.municipio.cd_tse.join(', '))}. Bairros normalizados pela lista do GabineteOS.</p>
+  <p><b>Extração:</b> arquivos gerados pelo TSE em ${esc(D.geracao_tse.join(', ')||'—')}; processados em ${esc(D.gerado_em)}.</p>
+  <p><b>Lacunas:</b></p><ul>${D.lacunas.map(l=>`<li>${esc(l)}</li>`).join('')}</ul></footer>`;
+}
+function drawMap(){$('#mapbox').innerHTML=mapa();$('#painel').innerHTML=painel()}
+function abrir(id){st.sel=id;drawMap();if(matchMedia('(max-width:760px)').matches){$('#painel').classList.add('open');$('#scrim').classList.add('open')}}
+function fechar(){st.sel=null;$('#painel').classList.remove('open');$('#scrim').classList.remove('open');drawMap()}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-nivel],[data-camada],[data-act],.pt,[data-sort],tr[data-bairro]');
+  if(e.target.id==='scrim')return fechar();
+  if(!t)return;
+  if(t.dataset.nivel){st.nivel=t.dataset.nivel;st.sel=null;render();return}
+  if(t.dataset.camada){st.camada=t.dataset.camada;render();return}
+  if(t.dataset.act==='fechar')return fechar();
+  if(t.dataset.act==='tema'){const cur=document.documentElement.dataset.theme||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');const n=cur==='light'?'dark':'light';document.documentElement.dataset.theme=n;try{localStorage.setItem('be-tema',n)}catch(e){};render();return}
+  if(t.dataset.sort){const k=t.dataset.sort;st.sort={k,dir:st.sort.k===k?-st.sort.dir:(['nome','zona','vencedor','classe','posicao'].includes(k)?1:-1)};$('#tbl').innerHTML=tabela();return}
+  if(t.classList.contains('pt'))return abrir(t.dataset.id);
+  if(t.dataset.bairro){if(st.nivel!=='bairro'){st.nivel='bairro';render()}abrir(t.dataset.bairro);$('#painel').scrollIntoView({behavior:'smooth',block:'nearest'})}
+});
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList?.contains('pt')){e.preventDefault();abrir(e.target.dataset.id)}if(e.key==='Escape')fechar()});
+document.addEventListener('input',e=>{if(e.target.id==='busca'){st.q=e.target.value;$('#tbl').innerHTML=tabela()}});
+matchMedia('(prefers-color-scheme: light)').addEventListener?.('change',render);
+render();
+</script>
+</body>
+</html>
