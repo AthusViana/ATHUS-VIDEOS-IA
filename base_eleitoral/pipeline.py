@@ -354,6 +354,32 @@ def main():
         conferencia=dict(n_candidatos=len(conf), conferem=sum(1 for c in conf if c["confere"] == "sim"),
                          divergentes=divergentes[:20], sem_oficial=sum(1 for c in conf if c["confere"] == "sem total oficial")),
         lacunas=lacunas)
+    # carga para o app "Base Eleitoral" já publicado: coleção "locais" (lotes de até 50) e pacote do Comparativo
+    secoes_local = defaultdict(set)
+    for (z, s_), k in secao_local.items():
+        secoes_local[k].add(int(s_))
+    lotes_dir = DADOS / "carga_app_locais"
+    lotes_dir.mkdir(parents=True, exist_ok=True)
+    for f in lotes_dir.glob("lote_*.json"):
+        f.unlink()
+    docs = []
+    for u in niveis["local"]:
+        k = tuple(u["id"].split("-", 1))
+        docs.append(dict(op="set", collection="locais", doc_id=f"tse2024-z{int(k[0])}-l{int(k[1])}", data=dict(
+            nome=u["nome"], bairro=u["bairro"], zona=str(int(u["zona"])), endereco=u["endereco"], votos=u["votos"],
+            aptos=u["aptos"] or "", secoes=", ".join(str(x) for x in sorted(secoes_local[k])),
+            lat=u["lat"] if u["lat"] is not None else "", lng=u["lon"] if u["lon"] is not None else "",
+            fonte=f"TSE 2024, 1º turno (processado em {date.today().strftime('%d/%m/%Y')})")))
+    for i in range(0, len(docs), 50):
+        (lotes_dir / f"lote_{i // 50 + 1:02d}.json").write_text(json.dumps(docs[i:i + 50], ensure_ascii=False), encoding="utf-8")
+    comp_app = dict(gerado_em=pacote["gerado_em"], geracao_tse=pacote["geracao_tse"], anderson=pacote["anderson"],
+                    comparativo=comparativo, conferencia=pacote["conferencia"], lacunas=lacunas,
+                    validos_cidade=validos_cidade, validos_somados=validos_somados,
+                    bairros=[{k2: b[k2] for k2 in ("id", "zona", "n_locais", "votos", "validos", "pct_validos", "pct_total", "posicao",
+                                                   "n_candidatos", "vencedor", "vencedor_votos", "dif_vencedor", "top5", "classe")}
+                             for b in niveis["bairro"]])
+    (DADOS / "comparativo_app.json").write_text(json.dumps(comp_app, ensure_ascii=False), encoding="utf-8")
+
     (DADOS / "base_eleitoral.json").write_text(json.dumps(pacote, ensure_ascii=False), encoding="utf-8")
     html = (AQUI / "template.html").read_text(encoding="utf-8").replace("/*__DADOS__*/null", json.dumps(pacote, ensure_ascii=False).replace("</", "<\\/"))
     (SAIDA / "base_eleitoral.html").write_text(html, encoding="utf-8")
